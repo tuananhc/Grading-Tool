@@ -98,8 +98,8 @@ export default function App() {
           </Typography>
         </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="h2" gutterBottom>
+        <Box sx={{ display: "flex", alignItems: "center", marginBottom: 4 }}>
+          <Typography variant="h2">
             Anh Cháu's grading tool lmao
           </Typography>
           <IconButton 
