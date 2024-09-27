@@ -2,6 +2,8 @@
 
 This project was created as I grade assignments for my students in COMP10002 at The University of Melbourne
 
+You can find the website [here](https://tuananhc.github.io/Grading-Tool/).
+
 ## Context
 
 As I went through the process, I realized that a lot of students make the same mistakes (naturally), and I
