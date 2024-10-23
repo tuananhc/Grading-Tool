@@ -32,8 +32,11 @@ interface TabPanelProps {
   value: number;
 }
 
+
+// TODO: store session content in a cookie?
 export default function App() {
   const [data, setData] = useState<ListItem[]>([]);
+  const [notes, setNotes] = useState<string>("");
   const [copyAlertOpen, setCopyAlertOpen] = useState<boolean>(false);
   const [deleteAlertOpen, setDeleteAlertOpen] = useState<boolean>(false);
   const [itemCount, setItemCount] = useState<number>(0);
@@ -79,6 +82,8 @@ export default function App() {
 
         <ComponentsRenderedOnWindowSize 
           data={data}
+          notes={notes}
+          setNotes={setNotes}
           addItem={addItem}
           popUpCopyAlert={popUpCopyAlert}
           popUpDeleteAlert={popUpDeleteAlert}
@@ -314,7 +319,7 @@ function ComponentsRenderedOnWindowSize(props: any) {
           onChange={props.handleItemContentChange}
           removeItem={props.removeItem}
         />
-        <NoteBox />
+        <NoteBox notes={props.notes} setNotes={props.setNotes}/>
       </Box>
     )
   } else {
@@ -342,7 +347,7 @@ function ComponentsRenderedOnWindowSize(props: any) {
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <NoteBox />
+          <NoteBox notes={props.notes} setNotes={props.setNotes}/>
         </CustomTabPanel>
       </Box>
     );
@@ -402,6 +407,10 @@ function NoteBox(props: any) {
         fullWidth
         multiline
         focused
+        value={props.notes}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          props.setNotes(event.target.value);
+        }}
         variant="filled"
         sx={{ 
           borderRadius: 2,
