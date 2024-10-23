@@ -298,7 +298,7 @@ function CustomTabPanel(props: TabPanelProps) {
 }
 
 function ComponentsRenderedOnWindowSize(props: any) {
-  const matches = useMediaQuery('(min-width:800px)');
+  const matches = useMediaQuery('(min-width:1000px)');
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
