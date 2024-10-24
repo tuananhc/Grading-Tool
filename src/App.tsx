@@ -316,7 +316,7 @@ function ComponentsRenderedOnWindowSize(props: any) {
           addItem={props.addItem}
           popUpCopyAlert={props.popUpCopyAlert}
           popUpDeleteAlert={props.popUpDeleteAlert}
-          onChange={props.handleItemContentChange}
+          onChange={props.onChange}
           removeItem={props.removeItem}
         />
         <NoteBox notes={props.notes} setNotes={props.setNotes}/>
