@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import {
   Alert,
@@ -32,11 +32,28 @@ interface TabPanelProps {
   value: number;
 }
 
+function getInitialData(): ListItem[] {
+  var data = localStorage.getItem("data");
+  if (!data) {
+    return [];
+  } 
+  
+  return JSON.parse(data);
+}
+
+function getInitialNotes(): string {
+  var notes = localStorage.getItem("notes");
+  if (!notes) {
+    return "";
+  } 
+  
+  return notes;
+}
 
 // TODO: store session content in a cookie?
 export default function App() {
-  const [data, setData] = useState<ListItem[]>([]);
-  const [notes, setNotes] = useState<string>("");
+  const [data, setData] = useState<ListItem[]>(getInitialData());
+  const [notes, setNotes] = useState<string>(getInitialNotes());
   const [copyAlertOpen, setCopyAlertOpen] = useState<boolean>(false);
   const [deleteAlertOpen, setDeleteAlertOpen] = useState<boolean>(false);
   const [itemCount, setItemCount] = useState<number>(0);
@@ -60,6 +77,10 @@ export default function App() {
     setData(data => data.filter((item)=> item.id !== itemId ))
   }
 
+  function removeAllItem() {
+    setData([]);
+  }
+
   function popUpCopyAlert() {
     setCopyAlertOpen(true);
     setTimeout(() => setCopyAlertOpen(false), 2000)
@@ -69,6 +90,15 @@ export default function App() {
     setDeleteAlertOpen(true);
     setTimeout(() => setDeleteAlertOpen(false), 2000)
   }
+
+  function removeAllNotes() {
+    setNotes("");
+  }
+
+  useEffect(() => {
+    localStorage.setItem("data", JSON.stringify(data));
+    localStorage.setItem("notes", notes); 
+  }, [data, notes])
 
   return (
     <div className="App" style={{ display: "flex" }}>
@@ -89,6 +119,8 @@ export default function App() {
           popUpDeleteAlert={popUpDeleteAlert}
           onChange={handleItemContentChange}
           removeItem={removeItem}
+          removeAllItem={removeAllItem}
+          removeAllNotes={removeAllNotes}
         />
         
         <Modal
@@ -318,8 +350,14 @@ function ComponentsRenderedOnWindowSize(props: any) {
           popUpDeleteAlert={props.popUpDeleteAlert}
           onChange={props.onChange}
           removeItem={props.removeItem}
+          removeAllItem={props.removeAllItem}
         />
-        <NoteBox notes={props.notes} setNotes={props.setNotes}/>
+        <NoteBox 
+          notes={props.notes} 
+          setNotes={props.setNotes}
+          removeAllNotes={props.removeAllNotes}
+          popUpDeleteAlert={props.popUpDeleteAlert}
+        />
       </Box>
     )
   } else {
@@ -344,10 +382,16 @@ function ComponentsRenderedOnWindowSize(props: any) {
             popUpDeleteAlert={props.popUpDeleteAlert}
             onChange={props.onChange}
             removeItem={props.removeItem}
+            removeAllItem={props.removeAllItem}
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <NoteBox notes={props.notes} setNotes={props.setNotes}/>
+          <NoteBox 
+            notes={props.notes} 
+            setNotes={props.setNotes}
+            removeAllNotes={props.removeAllNotes}
+            popUpDeleteAlert={props.popUpDeleteAlert}
+          />
         </CustomTabPanel>
       </Box>
     );
@@ -375,6 +419,15 @@ function ItemList(props: any) {
           >
           <AddIcon color="primary"/>
         </IconButton>
+        <IconButton 
+          aria-label="delete" 
+          onClick={() => {
+            props.removeAllItem();
+            props.popUpDeleteAlert();
+          }}
+        >
+          <DeleteOutlineOutlinedIcon color="primary"/>
+        </IconButton>
       </Box>
       <>
         {props.data.map((item: any, i: number) => {
@@ -399,11 +452,28 @@ function NoteBox(props: any) {
       display: "flex", 
       flexDirection: "column", 
       flex: 0.5, 
-      paddingLeft: 6,
-      paddingTop: 4,
     }}>
+      <Box sx={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 2
+      }}>
+        <Typography variant="h5">
+          Notes
+        </Typography>
+        <IconButton 
+          aria-label="delete" 
+          size="large"
+          onClick={() => {
+            props.removeAllNotes();
+            props.popUpDeleteAlert();
+          }}
+        >
+          <DeleteOutlineOutlinedIcon color="primary"/>
+        </IconButton>
+      </Box>
       <TextField 
-        label="Notes"
         fullWidth
         multiline
         focused
@@ -415,7 +485,7 @@ function NoteBox(props: any) {
         sx={{ 
           borderRadius: 2,
           "& .MuiInputBase-input": {
-            color: 'blue', fontFamily: "monospace", whiteSpace: "pre", paddingTop: 2
+            color: 'blue', fontFamily: "monospace", whiteSpace: "pre",
           },
           "& .MuiFormLabel-root": {
             color: 'blue', fontFamily: "monospace", whiteSpace: "pre", fontSize: 20
