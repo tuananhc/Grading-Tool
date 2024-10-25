@@ -398,7 +398,7 @@ function ComponentsRenderedOnWindowSize(props: any) {
   }
 
 }
-
+ 
 function ItemList(props: any) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", flex: 0.5 }}>
